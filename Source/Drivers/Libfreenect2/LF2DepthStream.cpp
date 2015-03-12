@@ -17,14 +17,19 @@ LF2DepthStream::BuildFrame(libfreenect2::Frame* frame_in,OniFrame* frame_out)
   uint16_t* const out_array = (uint16_t*) frame_out->data;
   unsigned int t = 0;
   for (unsigned int y = 0; y < frame_in->height; y++)
-	{
+    {
       for (unsigned int x = 0; x < frame_in->width; x++)
-		{
+        {
           out_array[t] = in_array[t];
           ++t;
         }
     }
 
+  // print center pixel
+  const std::size_t center_x = frame_in->width;
+  const std::size_t center_y = frame_in->height;
+  const std::size_t center_index = center_x * center_y / 2+ center_x / 2;
+  printf("raw openni: %f %d %s\n", in_array[center_index], out_array[center_index],__func__);
 
   frame_out->frameIndex = frame_in->sequence;
   frame_out->sensorType = ONI_SENSOR_DEPTH;
@@ -72,19 +77,19 @@ LF2DepthStream::getProperty(int propertyId, void* data, int* pDataSize)
         status = ONI_STATUS_OK;
         break;
       }		
-	case ONI_STREAM_PROPERTY_MAX_VALUE:
+    case ONI_STREAM_PROPERTY_MAX_VALUE:
       if (*pDataSize != sizeof(int))
-		{
+        {
           return ONI_STATUS_BAD_PARAMETER;
-		}
+        }
 
       *(int*)data = 10000;
       return ONI_STATUS_OK;
-	case ONI_STREAM_PROPERTY_MIN_VALUE:
+    case ONI_STREAM_PROPERTY_MIN_VALUE:
       if (*pDataSize != sizeof(int))
-		{
+        {
           return ONI_STATUS_BAD_PARAMETER;
-		}
+        }
 
       *(int*)data = 0;
       return ONI_STATUS_OK;
